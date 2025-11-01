@@ -1,1 +1,15 @@
+<!DOCTYPE html>
+<html>
+<body>
+<input id="urlInput" type="text" placeholder="Enter URL..." style="width: 300px;">
+<button onclick="go()">Go</button>
 
+
+<script>
+    function go() {
+        let url = document.getElementById('urlInput').value;
+        window.location.href = url
+    }
+</script>
+</body>
+</html>
