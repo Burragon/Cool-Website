@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body>
+<input id="urlInput" type="text">
+<button onclick="go()">Go</button>
+</body>
+
+<script>
+    function go() {
+        let url = document.getElementById('urlInput').value;
+        window.location.href = url
+    }
+</script>
+</html>
