@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <body>
-<input id="urlInput" type="text">
+<input id="urlInput" type="text" placeholder="Enter URL..." style="width: 300px;">
 <button onclick="go()">Go</button>
-</body>
+
 
 <script>
     function go() {
@@ -11,4 +11,5 @@
         window.location.href = url
     }
 </script>
+</body>
 </html>
