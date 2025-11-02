@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>LaTeX to PDF Compiler (GitHub Pages)</title>
+  <title>LaTeX to PDF Compiler (GitHub Pages, CORS)</title>
 </head>
 <body>
-  <h1>LaTeX to PDF (via latexonline.cc)</h1>
+  <h1>LaTeX to PDF (via ytotech API)</h1>
   <textarea id="latexInput" rows="15" cols="80">\documentclass{article}
 \begin{document}
 Hello, \LaTeX\ world!
@@ -21,16 +21,13 @@ Hello, \LaTeX\ world!
       document.getElementById('download').style.display = 'none';
       const latex = document.getElementById('latexInput').value;
 
-      // Send to latexonline.cc
-      const formData = new FormData();
-      formData.append('text', latex);
-
       try {
         const response = await fetch(
-          'https://latexonline.cc/data',
+          "https://latex.ytotech.com/build/pdf",
           {
-            method: 'POST',
-            body: formData
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ "main.tex": latex })
           }
         );
         if (response.ok) {
