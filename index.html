@@ -1,29 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>LaTeX Compiler</title>
-  <style>
-    textarea { width: 100%; height: 300px; }
-    iframe { width: 100%; height: 500px; border: 1px solid #ccc; }
-  </style>
 </head>
 <body>
-  <h1>Online LaTeX Compiler</h1>
-  <textarea id="latexInput">\\documentclass{article}\n\\begin{document}\nHello World!\n\\end{document}</textarea>
-  <button onclick="compileLatex()">Compile</button>
-  <iframe id="output"></iframe>
+  <h1>LaTeX Compiler</h1>
+  <textarea id="latexCode" rows="20" cols="80" placeholder="Enter your LaTeX code here..."></textarea><br>
+  <button id="compileBtn">Compile</button>
 
   <script>
-    async function compileLatex() {
-      const code = document.getElementById('latexInput').value;
-      const res = await fetch('/compile', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+    const compileBtn = document.getElementById("compileBtn");
+
+    compileBtn.addEventListener("click", async () => {
+      const code = document.getElementById("latexCode").value;
+      
+      const response = await fetch("/compile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code })
       });
-      const blob = await res.blob();
-      document.getElementById('output').src = URL.createObjectURL(blob);
-    }
+
+      if (!response.ok) {
+        alert("Compilation failed!");
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "output.pdf";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
   </script>
 </body>
 </html>
