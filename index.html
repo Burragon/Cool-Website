@@ -4,23 +4,9 @@
   <meta charset="UTF-8">
   <title>LaTeX Compiler (Browser)</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px;
-    }
-    textarea {
-      width: 80%;
-      height: 300px;
-      font-family: monospace;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-    button {
-      font-size: 16px;
-      padding: 10px 20px;
-      cursor: pointer;
-    }
+    body { font-family: Arial, sans-serif; text-align: center; padding: 40px; }
+    textarea { width: 80%; height: 300px; font-family: monospace; font-size: 14px; margin-bottom: 20px; }
+    button { font-size: 16px; padding: 10px 20px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -32,27 +18,36 @@ Hello, World!
   <br>
   <button id="compileBtn">Compile to PDF</button>
 
+  <!-- Load Tectonic.js WASM version as a module -->
   <script type="module">
+    // Import compileString from tectonic-wasm
     import { compileString } from 'https://cdn.jsdelivr.net/npm/@tectonic-typesetting/tectonic-wasm@0.1.6/dist/tectonic-wasm.esm.min.js';
 
     const compileBtn = document.getElementById("compileBtn");
+    const textarea = document.getElementById("latexCode");
 
     compileBtn.addEventListener("click", async () => {
-      const code = document.getElementById("latexCode").value;
+      const code = textarea.value;
       compileBtn.disabled = true;
       compileBtn.textContent = "Compiling...";
 
       try {
-        const pdfData = await compileString(code); // Uint8Array PDF
+        // Compile LaTeX to PDF
+        const pdfData = await compileString(code);
         const blob = new Blob([pdfData], { type: "application/pdf" });
         const url = URL.createObjectURL(blob);
 
+        // Trigger download
         const a = document.createElement("a");
         a.href = url;
         a.download = "output.pdf";
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
         URL.revokeObjectURL(url);
+
       } catch (e) {
+        console.error(e);
         alert("Compilation failed: " + e.message);
       } finally {
         compileBtn.disabled = false;
