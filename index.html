@@ -3,36 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <title>LaTeX Compiler</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      text-align: center;
+    }
+    textarea {
+      width: 80%;
+      height: 300px;
+      font-family: monospace;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    button {
+      font-size: 16px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>LaTeX Compiler</h1>
-  <textarea id="latexCode" rows="20" cols="80" placeholder="Enter your LaTeX code here..."></textarea><br>
-  <button id="compileBtn">Compile</button>
+  <h1>LaTeX Compiler (Browser)</h1>
+  <textarea id="latexCode" placeholder="Enter your LaTeX code here...">
+\documentclass{article}
+\begin{document}
+Hello, World!
+\end{document}
+  </textarea><br>
+  <button id="compileBtn">Compile to PDF</button>
 
+  <script src="https://cdn.jsdelivr.net/npm/tectonic.js/dist/tectonic.min.js"></script>
   <script>
     const compileBtn = document.getElementById("compileBtn");
 
     compileBtn.addEventListener("click", async () => {
       const code = document.getElementById("latexCode").value;
-      
-      const response = await fetch("/compile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code })
-      });
+      compileBtn.disabled = true;
+      compileBtn.textContent = "Compiling...";
 
-      if (!response.ok) {
-        alert("Compilation failed!");
-        return;
+      try {
+        const pdfData = await Tectonic.compile(code); // PDF as Uint8Array
+        const blob = new Blob([pdfData], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "output.pdf";
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        alert("Compilation failed: " + e.message);
+      } finally {
+        compileBtn.disabled = false;
+        compileBtn.textContent = "Compile to PDF";
       }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "output.pdf";
-      a.click();
-      window.URL.revokeObjectURL(url);
     });
   </script>
 </body>
