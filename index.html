@@ -23,7 +23,7 @@ Hello, World!
     let compileString;
     try {
       // Dynamically import the module for better error handling
-      const mod = await import('https://cdn.jsdelivr.net/npm/@tectonic-typesetting/tectonic-wasm@0.1.6/dist/tectonic-wasm.esm.min.js');
+      const mod = await import { compileString } from 'https://unpkg.com/@tectonic-typesetting/tectonic-wasm@0.1.6/dist/tectonic-wasm.esm.min.js';
       compileString = mod.compileString;
     } catch (err) {
       alert("Failed to load Tectonic WASM module: " + err.message);
