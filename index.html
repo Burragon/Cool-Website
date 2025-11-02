@@ -1,15 +1,29 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <title>LaTeX Compiler</title>
+  <style>
+    textarea { width: 100%; height: 300px; }
+    iframe { width: 100%; height: 500px; border: 1px solid #ccc; }
+  </style>
+</head>
 <body>
-<input id="urlInput" type="text" placeholder="Enter URL..." style="width: 300px;">
-<button onclick="go()">Go</button>
+  <h1>Online LaTeX Compiler</h1>
+  <textarea id="latexInput">\\documentclass{article}\n\\begin{document}\nHello World!\n\\end{document}</textarea>
+  <button onclick="compileLatex()">Compile</button>
+  <iframe id="output"></iframe>
 
-
-<script>
-    function go() {
-        let url = document.getElementById('urlInput').value;
-        window.location.href = url
+  <script>
+    async function compileLatex() {
+      const code = document.getElementById('latexInput').value;
+      const res = await fetch('/compile', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ code })
+      });
+      const blob = await res.blob();
+      document.getElementById('output').src = URL.createObjectURL(blob);
     }
-</script>
+  </script>
 </body>
 </html>
