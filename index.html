@@ -20,8 +20,15 @@ Hello, World!
 
   <!-- Load Tectonic.js WASM version as a module -->
   <script type="module">
-    // Import compileString from tectonic-wasm
-    import { compileString } from 'https://cdn.jsdelivr.net/npm/@tectonic-typesetting/tectonic-wasm@0.1.6/dist/tectonic-wasm.esm.min.js';
+    let compileString;
+    try {
+      // Dynamically import the module for better error handling
+      const mod = await import('https://cdn.jsdelivr.net/npm/@tectonic-typesetting/tectonic-wasm@0.1.6/dist/tectonic-wasm.esm.min.js');
+      compileString = mod.compileString;
+    } catch (err) {
+      alert("Failed to load Tectonic WASM module: " + err.message);
+      throw err;
+    }
 
     const compileBtn = document.getElementById("compileBtn");
     const textarea = document.getElementById("latexCode");
@@ -32,8 +39,8 @@ Hello, World!
       compileBtn.textContent = "Compiling...";
 
       try {
-        // Compile LaTeX to PDF
-        const pdfData = await compileString(code);
+        // Compile LaTeX to PDF - provide 'main.tex' as document name
+        const pdfData = await compileString(code, "main.tex");
         const blob = new Blob([pdfData], { type: "application/pdf" });
         const url = URL.createObjectURL(blob);
 
@@ -48,7 +55,7 @@ Hello, World!
 
       } catch (e) {
         console.error(e);
-        alert("Compilation failed: " + e.message);
+        alert("Compilation failed: " + (e && e.message ? e.message : e));
       } finally {
         compileBtn.disabled = false;
         compileBtn.textContent = "Compile to PDF";
