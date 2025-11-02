@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>LaTeX Compiler</title>
+  <title>LaTeX Compiler (Browser)</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 40px;
       text-align: center;
+      padding: 40px;
     }
     textarea {
       width: 80%;
@@ -25,16 +25,16 @@
 </head>
 <body>
   <h1>LaTeX Compiler (Browser)</h1>
-  <textarea id="latexCode" placeholder="Enter your LaTeX code here...">
-\documentclass{article}
+  <textarea id="latexCode">\documentclass{article}
 \begin{document}
 Hello, World!
-\end{document}
-  </textarea><br>
+\end{document}</textarea>
+  <br>
   <button id="compileBtn">Compile to PDF</button>
 
-  <script src="https://cdn.jsdelivr.net/npm/tectonic.js/dist/tectonic.min.js"></script>
-  <script>
+  <script type="module">
+    import { compileString } from 'https://cdn.jsdelivr.net/npm/@tectonic-typesetting/tectonic-wasm@0.1.6/dist/tectonic-wasm.esm.min.js';
+
     const compileBtn = document.getElementById("compileBtn");
 
     compileBtn.addEventListener("click", async () => {
@@ -43,7 +43,7 @@ Hello, World!
       compileBtn.textContent = "Compiling...";
 
       try {
-        const pdfData = await Tectonic.compile(code); // PDF as Uint8Array
+        const pdfData = await compileString(code); // Uint8Array PDF
         const blob = new Blob([pdfData], { type: "application/pdf" });
         const url = URL.createObjectURL(blob);
 
